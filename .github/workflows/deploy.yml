@@ -112,7 +112,7 @@ jobs:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: firmware
+          name: tasmota
           path: public/firmware
       
       ## TODO: Does this only download build artifacts for this specific workflow? If so, then this is perfect for us!
