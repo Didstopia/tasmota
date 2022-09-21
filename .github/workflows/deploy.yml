@@ -123,7 +123,7 @@ jobs:
 
       ## TODO: Remove this after testing!
       - name: Display structure of downloaded files
-        run: ls -R public public/firmware
+        run: ls -R . firmware
         working-directory: public
 
       ## TODO: Re-enable these after testing!
