@@ -70,7 +70,7 @@ jobs:
         run: platformio run -e ${{ matrix.variant }}
 
       - name: Upload Build Files
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           retention-days: 1 ## TODO: This is fine, right? Because we only need them for the deployment step anyway?
           # name: firmware
