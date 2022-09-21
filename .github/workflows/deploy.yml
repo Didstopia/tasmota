@@ -73,9 +73,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           retention-days: 1 ## TODO: This is fine, right? Because we only need them for the deployment step anyway?
-          # name: firmware
-          name: ${{ matrix.variant }}
-          path: ./build_output
+          name: tasmota
+          # name: ${{ matrix.variant }}
+          # path: ./build_output
+          path: build_output/firmware
 
       # - name: Checkout Repository (this)
       #   uses: actions/checkout@v3
@@ -108,22 +109,22 @@ jobs:
 
       ## FIXME: How do we do this though, because we can't use matrix builds here?! Do we need an extra job that combines the firmware files?!
       ## TODO: Download the build artifacts from the previous job and place them in the public folder
-      # - name: Download Build Artifacts
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: ${{ matrix.variant }}
-      #     path: public
-      
-      ## TODO: Does this only download build artifacts for this specific workflow? If so, then this is perfect for us!
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
+          name: firmware
           path: public/firmware
+      
+      ## TODO: Does this only download build artifacts for this specific workflow? If so, then this is perfect for us!
+      # - name: Download Build Artifacts
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     path: public/firmware
 
       ## TODO: Remove this after testing!
       - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: public/firmware
+        run: ls -R public public/firmware
+        working-directory: public
 
       ## TODO: Re-enable these after testing!
       # - name: Upload Files to GitHub Pages
