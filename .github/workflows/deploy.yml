@@ -1,0 +1,136 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Build Tasmota and Deploy OTA
+
+## TODO: Where do we actually store these?! Directly on the GitHub Pages I suppose?!
+
+## TODO: Add scheduled builds!
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - master
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+
+  # Build Tasmota
+  build:
+    name: Build Tasmota
+    runs-on: ubuntu-latest
+    timeout-minutes: 15 ## TODO: Adjust to a sane value
+
+    # Set up the Tasmota variants to build
+    strategy:
+      fail-fast: true
+      matrix:
+        variants:
+          ## TODO: Add more (or all) variants?
+          - tasmota
+          - tasmota4M
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          repository: arendst/Tasmota
+          # path: build/tasmota
+          # ref: development # Bleeding edge development code
+          ref: master # Stable release code
+          fetch-depth: 1
+      
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        ## TODO: Should we use a specific version?
+        # with:
+        #   python-version: 3.9
+      
+      - name: Install Dependencies
+        run: |-
+          pip install wheel
+          #python -m pip install --upgrade pip
+          pip install -U platformio
+          #platformio upgrade --dev
+          #platformio update
+
+      - name: Build Tasmota
+        run: platformio run -e ${{ matrix.variant }}
+
+      - name: Upload Build Files
+      - uses: actions/upload-artifact@v3
+        with:
+          retention-days: 1 ## TODO: This is fine, right? Because we only need them for the deployment step anyway?
+          # name: firmware
+          name: ${{ matrix.variant }}
+          path: ./build_output
+
+      # - name: Checkout Repository (this)
+      #   uses: actions/checkout@v3
+      
+      # - name: Checkout Repository (Tasmota)
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: arendst/Tasmota
+      #     path: build/tasmota
+      #     # ref: development # Bleeding edge development code
+      #     ref: master # Stable release code
+      #     fetch-depth: 1
+
+  # Deploy Tasmota binaries to OTA update website
+  deploy:
+    name: Deploy OTA
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 15 ## TODO: Adjust to a sane value
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v2
+
+      ## FIXME: How do we do this though, because we can't use matrix builds here?! Do we need an extra job that combines the firmware files?!
+      ## TODO: Download the build artifacts from the previous job and place them in the public folder
+      # - name: Download Build Artifacts
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: ${{ matrix.variant }}
+      #     path: public
+      
+      ## TODO: Does this only download build artifacts for this specific workflow? If so, then this is perfect for us!
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: public/firmware
+
+      ## TODO: Remove this after testing!
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: public/firmware
+
+      ## TODO: Re-enable these after testing!
+      # - name: Upload Files to GitHub Pages
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     path: public
+
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v1

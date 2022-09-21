@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+
+*.log
+*.dmp
+*.crash
+
+*.bin
+*.tar
+*.gz
+*.bz2
+*.xz
