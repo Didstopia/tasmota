@@ -124,10 +124,16 @@ jobs:
           name: tasmota
           path: public/firmware
 
+      - name: Generate Directory Listing
+        uses: jayanta525/github-pages-directory-listing@v2.0.0
+        with:
+          FOLDER: public/firmware
+
       - name: Upload Files to GitHub Pages
         uses: actions/upload-pages-artifact@v1
         with:
-          path: public
+          # path: public
+          path: public/firmware
 
       - name: Deploy to GitHub Pages
         id: deployment
