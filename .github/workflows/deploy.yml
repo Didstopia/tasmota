@@ -129,6 +129,7 @@ jobs:
           name: tasmota
           path: public/firmware
 
+      ## FIXME: While this is technically fine, customize the page a bit, especially the title (which incorrectly cites the path)
       - name: Generate Directory Listing
         uses: jayanta525/github-pages-directory-listing@v2.0.0
         with:
