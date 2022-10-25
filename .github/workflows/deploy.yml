@@ -91,6 +91,17 @@ jobs:
           pio upgrade --dev
           pio pkg update --global
 
+      ## TODO: Add a custom rule for a custom build, so we can do eg. battery charger auto-shutoff builds ootb
+      ##       https://tasmota.github.io/docs/Compile-your-build/#user_rule
+      - name: Customize Tasmota
+        run: |
+          touch tasmota/user_config_override.h
+          echo -e "#define USE_EXPRESSION         // Add support for expression evaluation in rules (+3k2 code, +64 bytes mem)" >> tasmota/user_config_override.h
+          echo -e "#define SUPPORT_IF_STATEMENT   // Add support for IF statement in rules (+4k2 code, -332 bytes mem)" >> tasmota/user_config_override.h
+          echo -e "#ifdef USE_DOMOTICZ" >> tasmota/user_config_override.h
+          echo -e "#undef USE_DOMOTICZ" >> tasmota/user_config_override.h
+          echo -e "#endif" >> tasmota/user_config_override.h
+
       - name: Build Tasmota
         run: platformio run -e ${{ matrix.variant }}
 
