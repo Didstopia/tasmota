@@ -91,7 +91,7 @@ jobs:
           pio upgrade --dev
           pio pkg update --global
 
-      ## TODO: Add a custom rule for a custom build, so we can do eg. battery charger auto-shutoff builds ootb
+      ## TODO: Add a custom rule for a custom build, so we can do eg. battery charger auto-shutoff builds ootb (remember that we need things like SetOption21 too?!)
       ##       https://tasmota.github.io/docs/Compile-your-build/#user_rule
       - name: Customize Tasmota
         run: |
