@@ -40,7 +40,9 @@ jobs:
 
     # Set up the Tasmota variants to build
     strategy:
-      fail-fast: true
+      ## FIXME: tasmota-display is currently failing, so let it fail
+      # fail-fast: true
+      fail-fast: false
       matrix:
         variant:
           - tasmota
