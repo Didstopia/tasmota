@@ -14,7 +14,7 @@ on:
 
   # Build on a schedule once a week
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: '0 0 * * mon'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -36,13 +36,11 @@ jobs:
   build:
     name: Build Tasmota
     runs-on: ubuntu-latest
-    timeout-minutes: 10 ## TODO: Adjust to a sane value
+    timeout-minutes: 10
+    continue-on-error: true
 
     # Set up the Tasmota variants to build
     strategy:
-      ## FIXME: tasmota-display is currently failing, so let it fail
-      # fail-fast: true
-      fail-fast: false
       matrix:
         variant:
           - tasmota
@@ -63,35 +61,23 @@ jobs:
           repository: arendst/Tasmota
           # ref: development # Bleeding edge development code
           ref: master        # Stable release code
-          fetch-depth: 1
-
-      # - name: Setup Python
-      #   uses: actions/setup-python@v3
-      #   ## TODO: Should we use a specific version?
-      #   # with:
-      #   #   python-version: 3.9
-
-      # - name: Install Dependencies
-      #   run: |-
-      #     pip install wheel
-      #     #python -m pip install --upgrade pip
-      #     pip install -U platformio
-      #     #platformio upgrade --dev
-      #     #platformio update
+          # fetch-depth: 1
 
       - name: Setup Python
         # if: success()
         uses: actions/setup-python@v3
         with:
-          python-version: '3.7' # Version range or exact version of a Python version to use, using semvers version range syntax.
-          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+          python-version: '3.x' # '3.7' # Version range or exact version of a Python version to use, using semvers version range syntax.
+          # architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
       - name: Install PlatformIO
         # if: success()
         run: |
+          # pip install -U platformio
+          # pio upgrade --dev
+          # pio pkg update --global
+          pip install wheel
           pip install -U platformio
-          pio upgrade --dev
-          pio pkg update --global
 
       ## TODO: Add a custom rule for a custom build, so we can do eg. battery charger auto-shutoff builds ootb (remember that we need things like SetOption21 too?!)
       ##       https://tasmota.github.io/docs/Compile-your-build/#user_rule
@@ -119,7 +105,8 @@ jobs:
     name: Deploy OTA
     runs-on: ubuntu-latest
     needs: build
-    timeout-minutes: 5 ## TODO: Adjust to a sane value
+    timeout-minutes: 5
+    continue-on-error: true
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
       pages: write      # to deploy to Pages
