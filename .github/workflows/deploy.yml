@@ -103,6 +103,11 @@ jobs:
           echo -e "#define USE_BH1750      // [I2cDriver11] Enable BH1750 sensor (I2C address 0x23 or 0x5C) (+0k5 code)" >> tasmota/user_config_override.h
           echo -e "#endif" >> tasmota/user_config_override.h
 
+          # Enable LD2410 support (24GHz mmWave presence/person detector)
+          echo -e "#ifndef USE_LD2410" >> tasmota/user_config_override.h
+          echo -e "#define USE_LD2410" >> tasmota/user_config_override.h
+          echo -e "#endif" >> tasmota/user_config_override.h
+
       - name: Build Tasmota
         run: platformio run -e ${{ matrix.variant }}
 
