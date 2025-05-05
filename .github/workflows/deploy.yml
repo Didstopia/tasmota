@@ -112,11 +112,13 @@ jobs:
         run: platformio run -e ${{ matrix.variant }}
 
       - name: Upload Build Files
-        uses: actions/upload-artifact@v4
+        #uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact/merge@v4
         with:
           retention-days: 1
           ## FIXME: We need a way to upload and download ALL variants!
-          name: ${{ matrix.variant }}
+          name: tasmota
+          #name: ${{ matrix.variant }}
           path: build_output/firmware
 
   # Deploy Tasmota binaries to OTA update website
