@@ -119,9 +119,10 @@ jobs:
           ## FIXME: We need a way to upload and download ALL variants!
           #name: tasmota
           name: ${{ matrix.variant }}
-          #path: build_output/firmware
+          path: build_output/firmware
 
   merge:
+    name: Merge Artifacts
     runs-on: ubuntu-latest
     needs: build
     steps:
