@@ -56,7 +56,7 @@ jobs:
     steps:
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: arendst/Tasmota
           # ref: development # Bleeding edge development code
@@ -65,7 +65,7 @@ jobs:
 
       - name: Setup Python
         # if: success()
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x' # '3.7' # Version range or exact version of a Python version to use, using semvers version range syntax.
           # architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
@@ -112,7 +112,7 @@ jobs:
         run: platformio run -e ${{ matrix.variant }}
 
       - name: Upload Build Files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           retention-days: 1
           name: tasmota
@@ -136,13 +136,13 @@ jobs:
     steps:
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup GitHub Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tasmota
           path: public/firmware
@@ -154,11 +154,11 @@ jobs:
           FOLDER: public/firmware
 
       - name: Upload Files to GitHub Pages
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # path: public
           path: public/firmware
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
