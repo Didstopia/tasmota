@@ -133,7 +133,7 @@ jobs:
   deploy:
     name: Deploy OTA
     runs-on: ubuntu-latest
-    needs: build
+    needs: [ build, merge ]
     timeout-minutes: 5
     continue-on-error: true
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
